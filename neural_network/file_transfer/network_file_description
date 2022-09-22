@@ -1,0 +1,26 @@
+
+Network files are used for archiving neural networks as simple txt files. To make them recognizable, they use
+the file ending '.nn', which obviously is short for 'neural network'.
+The basic principle is that there are keywords and values, where keywords always occupy a single line for themselves,
+followed by the respective value(s).
+In the following structure, empty lines are only used for readability.
+
+network_class
+<class_name>
+
+network_name
+<network_name>
+
+layer
+
+node_class
+<class_name>
+
+node_name
+<node_name>
+
+weights
+<weight>
+
+bias
+<bias>
