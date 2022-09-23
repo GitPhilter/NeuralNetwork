@@ -151,20 +151,3 @@ def _compare_two_networks(network_1, network_2):
             logger.error(f"line '{strings_1[i]}' != '{strings_2[i]}'")
             return False
     return True
-
-
-if __name__=="__main__":
-    input_layer = [Id_Node("Input_Node no. 0", [1, 0, 0], 0),
-                   Id_Node("Input_Node no. 1", [0, 1, 0], 0),
-                   Id_Node("Input_Node no. 2", [0, 0, 1], 0)]
-    second_layer = [Relu_Node("Relu_Node no. 0", [1, 0.5, 0], 1),
-                    Relu_Node("Relu_Node no. 1", [0, 0.5, 1], 1)]
-    output_layer = [Relu_Node("Relu_Node no. 0", [1, 1], 0)]
-    _layers = [input_layer, second_layer, output_layer]
-    network = NeuralNetwork("Simple Test Network", _layers)
-    logger.info(network)
-    file_path = "/home/kwetschmann/PycharmProjects/ComputerVision/res/data/neural_networks/test_network.nnf"
-    save_network_to_file(network, file_path)
-    loaded_network = load_network_from_file(file_path)
-    logger.info(loaded_network)
-    logger.info(f"Networks are identical: {_compare_two_networks(network, loaded_network)}")

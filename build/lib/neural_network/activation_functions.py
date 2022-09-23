@@ -13,7 +13,7 @@ def id_function(x):
 
 
 def relu_function(x):
-    "The ReLU-function."
+    """The ReLU-function."""
     return max(0, x)
 
 

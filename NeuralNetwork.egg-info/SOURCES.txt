@@ -10,6 +10,7 @@ neural_network/nodes.py
 neural_network/file_transfer/__init__.py
 neural_network/file_transfer/file_transfer.py
 neural_network/implementations/__init__.py
+neural_network/implementations/generator_network.py
 neural_network/implementations/image_classification_network.py
 neural_network/training/__init__.py
 neural_network/training/data.py

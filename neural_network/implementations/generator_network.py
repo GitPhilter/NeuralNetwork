@@ -1,7 +1,6 @@
 import math
 
 import PIL.Image
-from PIL import Image
 from neural_network.neural_network import NeuralNetwork
 from neural_network.nodes import Input_Node, get_random_relu_node, get_random_sigmoid_node
 
@@ -58,6 +57,7 @@ class GreyscaleGeneratorNetwork(NeuralNetwork):
                 image.putpixel((x, y), (greyscale_value, greyscale_value, greyscale_value))
                 pixel_counter += 1
         return image
+
 
 if __name__=="__main__":
     network = GreyscaleGeneratorNetwork("hallo", 32, 32, 10)

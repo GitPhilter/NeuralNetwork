@@ -26,6 +26,12 @@ def set_logger(_logger, log_level=logging.INFO):
     logger.setLevel(log_level)
 
 
+def get_new_weight(old_weight, eta, deriv_E_w):
+    """Get new weight according to delta-function."""
+    new_weight = old_weight - eta * deriv_E_w
+    return new_weight
+
+
 class NeuralNetwork:
     """
     A classic feed forward neural network.
@@ -58,11 +64,6 @@ class NeuralNetwork:
         for node in self.layers[-1]:
             self.output.append(node.output)
 
-    def get_new_weight(self, old_weight, eta, deriv_E_w):
-        """Get new weight according to delta-function."""
-        new_weight = old_weight - eta * deriv_E_w
-        return new_weight
-
     def train(self, actual_output, expected_output, eta):
         """Train the neural network."""
         """output layer"""
@@ -75,10 +76,10 @@ class NeuralNetwork:
             for previous_node_index, previous_node in enumerate(self.layers[-2]):
                 deriv_node_w = previous_node.output
                 deriv_E_w = deriv_E_node * deriv_node_w
-                new_weight = self.get_new_weight(output_node.weights[previous_node_index], eta, deriv_E_w)
+                new_weight = get_new_weight(output_node.weights[previous_node_index], eta, deriv_E_w)
                 output_node.weights[previous_node_index] = new_weight
             """adapt bias"""
-            new_bias = self.get_new_weight(output_node.bias, eta, deriv_E_node)
+            new_bias = get_new_weight(output_node.bias, eta, deriv_E_node)
             output_node.bias = new_bias
         """hidden layers"""
         for layer_index in range(len(self.layers) - 2, 0, -1):
@@ -91,7 +92,7 @@ class NeuralNetwork:
                 """adapt weights"""
                 for previous_node_index, previous_node in enumerate(self.layers[layer_index - 1]):
                     deriv_E_w = deriv_E_hidden_node * hidden_node.weights[previous_node_index]
-                    new_weight = self.get_new_weight(hidden_node.weights[previous_node_index], eta, deriv_E_w)
+                    new_weight = get_new_weight(hidden_node.weights[previous_node_index], eta, deriv_E_w)
                     """Dirty way of clamping weights to range [-100, 100]."""
                     if new_weight > 100:
                         new_weight = float(100)
@@ -99,7 +100,7 @@ class NeuralNetwork:
                         new_weight = float(-100)
                     hidden_node.weights[previous_node_index] = new_weight
                 """adapt bias"""
-                new_bias = self.get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
+                new_bias = get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
                 hidden_node.bias = new_bias
 
     def __str__(self):
@@ -121,29 +122,3 @@ class NeuralNetwork:
     def __repr__(self):
         return self.__str__()
 
-
-if __name__=="__main__":
-    input_layer = [Id_Node("Input Node 1", [1, 0, 0], 0),
-                   Id_Node("Input Node 2", [0, 1, 0], 0),
-                   Id_Node("Input Node 3", [0, 0, 1], 0)]
-    second_layer = [Relu_Node("Relu_Node 1", [1, 0.5, 0], 1),
-                    Relu_Node("Relu_Node 2", [0, 0.5, 1], 1)]
-    output_layer = [Relu_Node("Output Relu_Node 1", [1, 1], 0)]
-    _layers = [input_layer, second_layer, output_layer]
-    network = NeuralNetwork("Test Network", _layers)
-    network.compute_output((2, 2, 2))
-    # logger.info(f"Computed output before training: {network.output}")
-
-    for i in range(1, 100):
-        expected_output = [1]
-        network.compute_output([2, 2, 2])
-        # logger.warning(f"The current output is {network.output}")
-        network.train(network.output, expected_output, eta=0.01)
-
-    network.compute_output((2, 2, 2))
-    # logger.info(f"Computed output after training: {network.output}")
-
-    logger.info(network)
-
-    network.compute_output((2, 10, 10))
-    logger.info(f"Computed output after training: {network.output}")
