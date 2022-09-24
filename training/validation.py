@@ -26,7 +26,7 @@ def validate_binary_prediction(network, data_object):
 
 def get_error_from_single_training(network, data_object):
     """Feed a DataObject to a network and train the network if the classification was incorrect."""
-    output = network.output.copy()
+    output = network.compute_output(data_object.data)
     expected_output = data_object.expected_result
     error = []
     for index, op in enumerate(output):
