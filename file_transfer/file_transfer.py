@@ -33,7 +33,7 @@ def save_data_objects(data_objects, file_path):
     file = open(file_path, 'w')
     #
     for do in data_objects:
-        file.write(f"{do.name}\n{do.data}\n{do.expected_output}\n")
+        file.write(f"{do.name}\n{do.data}\n{do.expected_result}\n")
     #
     file.close()
 
@@ -49,10 +49,10 @@ def load_data_objects(file_path):
         for t in tokens:
             data.append(float(t))
         tokens = lines[i + 2][1:-2].split(",")
-        expected_output = []
+        expected_result = []
         for t in tokens:
-            expected_output.append(float(t))
-        data_objects.append(DataObject(name, data, expected_output))
+            expected_result.append(float(t))
+        data_objects.append(DataObject(name, data, expected_result))
     return data_objects
 
 
