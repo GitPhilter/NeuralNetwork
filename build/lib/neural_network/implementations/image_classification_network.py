@@ -15,7 +15,7 @@ from neural_network.nodes import Input_Node, get_random_relu_node, get_random_si
 
 class ImageGreyscaleBinaryClassifyNetwork(NeuralNetwork):
 
-    def __init__(self, image_width, image_height, random_weights=True):
+    def __init__(self, name, image_width, image_height, random_weights=True):
         number_of_nodes = image_width * image_height
         input_layer = []
         hidden_layer = []
@@ -30,6 +30,6 @@ class ImageGreyscaleBinaryClassifyNetwork(NeuralNetwork):
             output_layer = [get_random_sigmoid_node(number_of_nodes, "Output_Relu_Node", set_bias=False)]
         else:
             output_layer = [get_zero_sigmoid_node(number_of_nodes, "Output_Relu_Node")]
-        super().__init__("Circle_Detector_Network", [input_layer, hidden_layer, output_layer])
+        super().__init__(name, [input_layer, hidden_layer, output_layer])
 
 

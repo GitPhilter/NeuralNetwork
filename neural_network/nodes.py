@@ -123,3 +123,11 @@ def get_zero_sigmoid_node(number_of_inputs, name="Sigmoid_Node"):
     for i in range(0, number_of_inputs):
         weights.append(0)
     return Sigmoid_Node(name, weights, 0)
+
+
+def get_start_sigmoid_node(number_of_inputs, name="Sigmoid_Node"):
+    """Return a Sigmoid_Node with all weights and bias set to 1/2."""
+    weights = []
+    for i in range(0, number_of_inputs):
+        weights.append(0.5)
+    return Sigmoid_Node(name, weights, 0)

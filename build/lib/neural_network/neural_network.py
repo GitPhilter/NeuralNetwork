@@ -63,14 +63,14 @@ class NeuralNetwork:
         self.output = []
         for node in self.layers[-1]:
             self.output.append(node.output)
+        return self.output.copy()
 
-    def train(self, actual_output, expected_output, eta):
-        """Train the neural network."""
+    def train_by_avg_error(self, avg_error, eta):
         """output layer"""
         for output_node_index, output_node in enumerate(self.layers[-1]):
-            actual_node_output = actual_output[output_node_index]
-            expected_node_output = expected_output[output_node_index]
-            deriv_E_node = actual_node_output - expected_node_output
+            #actual_node_output = actual_output[output_node_index]
+            #expected_node_output = expected_output[output_node_index]
+            deriv_E_node = [avg_error[output_node_index]]
             output_node.deriv_e_node = deriv_E_node
             """adapt each weight"""
             for previous_node_index, previous_node in enumerate(self.layers[-2]):
@@ -102,6 +102,20 @@ class NeuralNetwork:
                 """adapt bias"""
                 new_bias = get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
                 hidden_node.bias = new_bias
+
+
+    def train(self, actual_output, expected_output, eta):
+        """Train the neural network."""
+        avg_error = []
+        for i in range(0, len(actual_output)):
+            avg_error.append(actual_output[i] - expected_output[i])
+        self.train_by_avg_error(avg_error, eta)
+
+
+    def set_weights_and_biases(self, network):
+        """Copy all weights and biases from the given network to self."""
+        for self_layer_index, layer in enumerate(network.layers):
+            self.layers[self_layer_index] = layer.copy()
 
     def __str__(self):
         result_string = "Printing a network:\n"

@@ -1,7 +1,7 @@
 import random
 
 from neural_network.neural_network import NeuralNetwork, get_new_weight
-from neural_network.nodes import Input_Node, get_random_sigmoid_node, get_random_relu_node
+from neural_network.nodes import Input_Node, get_random_sigmoid_node, get_random_relu_node, get_start_sigmoid_node
 from neural_network.training.data import DataObject
 from neural_network.training.training import train_neural_network_single
 
@@ -22,13 +22,14 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
     def __init__(self, name, image_width, image_height):
         number_of_nodes = image_width * image_height
         input_layer = []
-        hidden_layer = []
+       # hidden_layer = []
         for i in range(0, number_of_nodes):
             input_layer.append(Input_Node(i, number_of_nodes))
             relu_name = "Hidden_Node no. " + str(i)
-            hidden_layer.append(get_random_relu_node(number_of_nodes, name=relu_name))
-        output_layer = [get_random_sigmoid_node(number_of_nodes, "Output_Relu_Node", set_bias=False)]
-        super().__init__(name, [input_layer, hidden_layer, output_layer])
+            #hidden_layer.append(get_random_relu_node(number_of_nodes, name=relu_name))
+        output_layer = [get_random_sigmoid_node(number_of_nodes, "Output_Relu_Node")]
+        #super().__init__(name, [input_layer, hidden_layer, output_layer])
+        super().__init__(name, [input_layer, output_layer])
 
     def get_error_vector(self, fake_image_vector):
         """
