@@ -10,7 +10,7 @@ from networks.neural_network import NeuralNetwork
 from networks.discriminator_network import GreyscaleDiscriminatorNetwork
 from networks.image_classification_network import ImageGreyscaleBinaryClassifyNetwork
 from networks.generator_network import GreyscaleGeneratorNetwork
-from networks.nodes import Input_Node
+from networks.nodes import Input_Node, Relu_Node, Sigmoid_Node
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
