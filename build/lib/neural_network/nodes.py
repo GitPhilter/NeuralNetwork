@@ -14,7 +14,7 @@ __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
 import random
-from neural_network import activation_functions
+from networks import activation_functions
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

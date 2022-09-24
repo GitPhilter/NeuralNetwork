@@ -4,9 +4,13 @@
 __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
+import random
 from random import randrange
-from neural_network.training.data import DataObject
+from training.data import DataObject
 import logging
+
+from training.validation import get_error_from_single_training
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO)
@@ -19,8 +23,6 @@ def set_logger(_logger, log_level=logging.INFO):
     logger.setLevel(log_level)
 
 
-"""Threshold for clamping outputs to 0 and 1."""
-THRESHOLD = 0.1
 """The learning rate eta."""
 ETA = 0.001
 
@@ -29,13 +31,9 @@ def train_neural_network_single(network, data_object: DataObject, eta=ETA):
     """Feed a DataObject to a network and train the network if the classification was incorrect."""
     network.compute_output(data_object.data)
     if network.output[0] >= 0.5 and data_object.expected_result == 1:
-    #if is_within_threshold(network.output[0], data_object.expected_result):
-        #print(f"classification correct!")
         return True
     elif network.output[0] < 0.5 and data_object.expected_result == 0:
-        #print(f"classification incorrect! Training network...")
         return True
-
     network.train(network.output, [data_object.expected_result], eta)
     return False
 
@@ -62,21 +60,27 @@ def run_batch(network, data_objects: [DataObject], iterations, eta=ETA):
     network.train_by_avg_error(error_sums, eta)
 
 
-def get_error_from_single_training(network, data_object):
-    """Feed a DataObject to a network and train the network if the classification was incorrect."""
-    output = network.output.copy()
-    expected_output = data_object.expected_result
-    error = []
-    for index, op in enumerate(output):
-        error.append(output[index] - expected_output[index])
+def validate_binary_prediction(network, data_object):
+    output = network.compute_output(data_object.data)
+    for index, o in enumerate(output):
+        if o > 0.5 and data_object.expected_result[index] == 0:
+            return False
+        if o <= 0.5 and data_object.expected_result[index] == 1:
+            return False
+    return True
 
 
-def is_within_threshold(actual_result, expected_result):
-    """Check whether a result is close enough to an expected result to be considered equal."""
-    if (actual_result - THRESHOLD < expected_result < actual_result) or \
-            (actual_result + THRESHOLD > expected_result > actual_result):
-        return True
-    return False
+def get_number_of_correct_predictions(network, data_objects, iterations):
+    correct_predictions = 0
+    for i in range(0, iterations):
+        index = random.randint(0, len(data_objects) - 1)
+        was_correct = validate_binary_prediction(network, data_objects[index])
+        if was_correct:
+            correct_predictions += 1
+    return correct_predictions
+
+
+
 
 
 

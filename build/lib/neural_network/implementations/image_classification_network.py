@@ -8,8 +8,8 @@ For example, a large circle has been detected and fit inside a bounding box and 
 __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
-from neural_network.neural_network import NeuralNetwork
-from neural_network.nodes import Input_Node, get_random_relu_node, get_random_sigmoid_node, \
+from networks import NeuralNetwork
+from networks.nodes import Input_Node, get_random_relu_node, get_random_sigmoid_node, \
     get_zero_relu_node, get_zero_sigmoid_node
 
 

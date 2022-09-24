@@ -11,8 +11,6 @@ to actually calculate derivatives along the way.
 __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
-
-from neural_network.nodes import Id_Node, Relu_Node
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -68,9 +66,7 @@ class NeuralNetwork:
     def train_by_avg_error(self, avg_error, eta):
         """output layer"""
         for output_node_index, output_node in enumerate(self.layers[-1]):
-            #actual_node_output = actual_output[output_node_index]
-            #expected_node_output = expected_output[output_node_index]
-            deriv_E_node = [avg_error[output_node_index]]
+            deriv_E_node = avg_error[output_node_index]
             output_node.deriv_e_node = deriv_E_node
             """adapt each weight"""
             for previous_node_index, previous_node in enumerate(self.layers[-2]):
@@ -93,16 +89,10 @@ class NeuralNetwork:
                 for previous_node_index, previous_node in enumerate(self.layers[layer_index - 1]):
                     deriv_E_w = deriv_E_hidden_node * hidden_node.weights[previous_node_index]
                     new_weight = get_new_weight(hidden_node.weights[previous_node_index], eta, deriv_E_w)
-                    """Dirty way of clamping weights to range [-100, 100]."""
-                    if new_weight > 100:
-                        new_weight = float(100)
-                    if new_weight < -100:
-                        new_weight = float(-100)
                     hidden_node.weights[previous_node_index] = new_weight
                 """adapt bias"""
                 new_bias = get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
                 hidden_node.bias = new_bias
-
 
     def train(self, actual_output, expected_output, eta):
         """Train the neural network."""
@@ -110,7 +100,6 @@ class NeuralNetwork:
         for i in range(0, len(actual_output)):
             avg_error.append(actual_output[i] - expected_output[i])
         self.train_by_avg_error(avg_error, eta)
-
 
     def set_weights_and_biases(self, network):
         """Copy all weights and biases from the given network to self."""

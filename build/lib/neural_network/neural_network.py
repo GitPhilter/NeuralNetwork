@@ -11,8 +11,6 @@ to actually calculate derivatives along the way.
 __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
-
-from neural_network.nodes import Id_Node, Relu_Node
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

@@ -6,8 +6,8 @@ Provide functions for saving and loading neural networks from/to a file.
 __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
-from neural_network.neural_network import NeuralNetwork
-from neural_network.nodes import Relu_Node, Id_Node, Input_Node, Sigmoid_Node
+from networks import NeuralNetwork
+from networks.nodes import Input_Node
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

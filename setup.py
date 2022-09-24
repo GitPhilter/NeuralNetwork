@@ -4,7 +4,7 @@ setup(
     name='NeuralNetwork',
     version='1.0',
     packages=['neural_network', 'neural_network.training', 'neural_network.file_transfer',
-              'neural_network.implementations'],
+              'neural_network.networks'],
     url='',
     license='',
     author='kwetschmann',

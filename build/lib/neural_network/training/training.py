@@ -5,7 +5,7 @@ __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
 from random import randrange
-from neural_network.training.data import DataObject
+from training import DataObject
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

@@ -6,8 +6,11 @@ Provide functions for saving and loading neural networks from/to a file.
 __author__ = "Mike Grätz"
 __date__ = "09-22-22"
 
-from neural_network.neural_network import NeuralNetwork
-from neural_network.nodes import Relu_Node, Id_Node, Input_Node, Sigmoid_Node
+from networks.neural_network import NeuralNetwork
+from networks.discriminator_network import GreyscaleDiscriminatorNetwork
+from networks.image_classification_network import ImageGreyscaleBinaryClassifyNetwork
+from networks.generator_network import GreyscaleGeneratorNetwork
+from networks.nodes import Input_Node
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -56,12 +59,16 @@ def load_network_from_file(file_path):
     """Load a neural network from the file located at the given file_path."""
     lines = open(file_path, 'r').read().split("\n")
     """Initialize variables"""
-    network_name = None
+    network_name = "? Unnamed Network ?"
+    network_class = "NeuralNetwork"
     layers = []
     index = 0
     while index < len(lines):
         line = lines[index]
         print(line)
+        if line == "network_class":
+            network_class = lines[index + 1]
+            index += 1
         if line == "network_name":
             network_name = lines[index + 1]
             index += 1
@@ -76,6 +83,12 @@ def load_network_from_file(file_path):
             layers.append(new_layer)
         else:
             index += 1
+    if network_class == "GreyscaleDiscriminatorNetwork":
+        return GreyscaleDiscriminatorNetwork(network_name, layers)
+    if network_class == "ImageGreyscaleBinaryClassifyNetwork":
+        return ImageGreyscaleBinaryClassifyNetwork(network_name, layers)
+    if network_class == "GreyscaleGeneratorNetwork":
+        return GreyscaleGeneratorNetwork(network_name, layers)
     return NeuralNetwork(network_name, layers)
 
 
