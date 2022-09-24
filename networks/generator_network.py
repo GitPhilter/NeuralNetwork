@@ -37,6 +37,7 @@ def get_GreyscaleGeneratorNetwork(name, result_image_width, result_image_height,
     greyscale_generator_network = GreyscaleGeneratorNetwork(name, layers)
     greyscale_generator_network.result_image_width = result_image_width
     greyscale_generator_network.result_mage_height = result_image_height
+    greyscale_generator_network.number_of_inputs = len(input_layer)
     return greyscale_generator_network
 
 
@@ -55,6 +56,7 @@ class GreyscaleGeneratorNetwork(NeuralNetwork):
     def __init__(self, name, layers):
         self.result_image_width = -1
         self.result_mage_height = -1
+        self.number_of_inputs = -1
         super().__init__(name, layers)
 
     def get_image_from_output(self):
