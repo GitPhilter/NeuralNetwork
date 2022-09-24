@@ -12,6 +12,9 @@ from networks.image_classification_network import ImageGreyscaleBinaryClassifyNe
 from networks.generator_network import GreyscaleGeneratorNetwork
 from networks.nodes import Input_Node, Relu_Node, Sigmoid_Node
 import logging
+
+from training.data import DataObject
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO)
@@ -22,6 +25,35 @@ def set_logger(_logger, log_level=logging.INFO):
     global logger
     logger = _logger
     logger.setLevel(log_level)
+
+
+def save_data_objects(data_objects, file_path):
+    """Save a given data objects to a file defined by file_path."""
+    logger.debug(f"Opening file '{file_path}'")
+    file = open(file_path, 'w')
+    #
+    for do in data_objects:
+        file.write(f"{do.name}\n{do.data}\n{do.expected_output}\n")
+    #
+    file.close()
+
+
+def load_data_objects(file_path):
+    """Load and return a list of data objects from file."""
+    lines = open(file_path).readlines()
+    data_objects = []
+    for i in range(0, len(lines) - 1, 3):
+        name = lines[i]
+        tokens = lines[i + 1][1:-2].split(",")
+        data = []
+        for t in tokens:
+            data.append(float(t))
+        tokens = lines[i + 2][1:-2].split(",")
+        expected_output = []
+        for t in tokens:
+            expected_output.append(float(t))
+        data_objects.append(DataObject(name, data, expected_output))
+    return data_objects
 
 
 def save_network_to_file(network, file_path):
