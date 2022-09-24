@@ -41,7 +41,7 @@ def train_neural_network_single(network, data_object: DataObject, eta=ETA):
 def run_training_iterations(network, data_objects: [DataObject], iterations):
     """Run a number of single training iterations given a list of DataObjects."""
     for i in range(0, iterations):
-        print(f"Training iteration no. {i}")
+        # print(f"Training iteration no. {i}")
         randex = randrange(len(data_objects))
         train_neural_network_single(network, data_objects[randex])
 
@@ -52,7 +52,7 @@ def run_batch(network, data_objects: [DataObject], iterations, eta=ETA):
     for i in range(0, len(network.layers[-1])):
         error_sums.append(0)
     for i in range(0, iterations):
-        print(f"Training iteration no. {i}")
+        # print(f"Training iteration no. {i}")
         randex = randrange(len(data_objects))
         error = get_error_from_single_training(network, data_objects[randex])
         for index, e in enumerate(error):
