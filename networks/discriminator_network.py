@@ -86,7 +86,6 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
                     """adapt bias"""
                     #new_bias = get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
                     #hidden_node.bias = new_bias
-            """get error vector"""
             error_vector = []
             for index, input_node in enumerate(self.layers[0]):
                 gradient_sum = 0
@@ -94,10 +93,11 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
                     gradient_sum += second_node.fake_weights[index] - second_node.weights[index]
                 error_vector.append(gradient_sum)
             return error_vector
+        return None
 
 
     def fake_image_not_classified_as_real(self):
-        if self.output[0] + THRESHOLD <= 1:
+        if self.output[0] < 0.5:
             return True
         return False
 
