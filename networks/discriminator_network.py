@@ -22,7 +22,7 @@ def get_GreyscaleDiscriminatorNetwork(name, image_width, image_height):
         input_layer.append(Input_Node(i, number_of_nodes))
         relu_name = "Hidden_Node no. " + str(i)
         # hidden_layer.append(get_random_relu_node(number_of_nodes, name=relu_name))
-    output_layer = [get_random_sigmoid_node(number_of_nodes, "Output_Relu_Node")]
+    output_layer = [get_random_sigmoid_node(number_of_nodes, "Output_Sigmoid_Node")]
     # super().__init__(name, [input_layer, hidden_layer, output_layer])
     return GreyscaleDiscriminatorNetwork(name, [input_layer, output_layer])
 
@@ -47,7 +47,9 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
             for node in layer:
                 node.fake_weights = node.weights.copy()
         self.compute_output(fake_image_vector)
-        if self.fake_image_not_classified_as_real():
+        #print(f"Output: {self.output}")
+        if self.output[0] < 0.5:
+            #print("FAKE IMAGE CLASSIFIED AS FAKE!")
             """output layer"""
             for output_node_index, output_node in enumerate(self.layers[-1]):
                 output_node.fake_weights = output_node.weights.copy()
@@ -93,8 +95,8 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
                     gradient_sum += second_node.fake_weights[index] - second_node.weights[index]
                 error_vector.append(gradient_sum)
             return error_vector
+        #print("FAKE IMAGE CLASSIFIED AS REAL!")
         return None
-
 
     def fake_image_not_classified_as_real(self):
         if self.output[0] < 0.5:

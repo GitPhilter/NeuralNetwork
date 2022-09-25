@@ -41,6 +41,44 @@ def get_GreyscaleGeneratorNetwork(name, result_image_width, result_image_height,
     return greyscale_generator_network
 
 
+def get_small_GreyscaleGeneratorNetwork(name, result_image_width, result_image_height, number_of_input_nodes=10):
+    #self.result_image_width = result_image_width
+    #self.result_mage_height = result_image_height
+    """Determine number of layers."""
+    number_of_output_nodes = result_image_width * result_image_height
+    # number_of_layers = math.ceil(math.log(number_of_output_nodes - number_of_input_nodes))
+    number_of_layers = 3
+    nodes_per_layer = []
+    for i in range(1, number_of_layers):
+        number_of_nodes = number_of_input_nodes + math.ceil(math.exp(i))
+        nodes_per_layer.append(number_of_nodes)
+    layers = []
+    """Create input layer."""
+    input_layer = []
+    for i in range(0, number_of_input_nodes):
+        input_layer.append(Input_Node(i, number_of_input_nodes))
+    layers.append(input_layer)
+    """create hidden and layers."""
+    number_of_previous_nodes = number_of_input_nodes
+    for i in range(0, number_of_layers - 1):
+        layer = []
+        for n in range(0, nodes_per_layer[i]):
+            layer.append(get_random_sigmoid_node(number_of_previous_nodes))
+        number_of_previous_nodes = nodes_per_layer[i]
+        layers.append(layer)
+    """create output layer"""
+    output_layer = []
+    for i in range(0, number_of_output_nodes):
+        output_layer.append(get_random_sigmoid_node(number_of_previous_nodes))
+    layers.append(output_layer)
+    greyscale_generator_network = GreyscaleGeneratorNetwork(name, layers)
+    greyscale_generator_network.result_image_width = result_image_width
+    greyscale_generator_network.result_mage_height = result_image_height
+    greyscale_generator_network.number_of_inputs = len(input_layer)
+    return greyscale_generator_network
+
+
+
 class GreyscaleGeneratorNetwork(NeuralNetwork):
 
     """

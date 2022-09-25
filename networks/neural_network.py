@@ -84,7 +84,7 @@ class NeuralNetwork:
                 for following_node_index, following_node in enumerate(self.layers[layer_index + 1]):
                     respective_weight = following_node.weights[hidden_node_index]
                     deriv_E_hidden_node += following_node.deriv_e_node * respective_weight
-                hidden_node.deriv_E_node = deriv_E_hidden_node
+                hidden_node.deriv_e_node = deriv_E_hidden_node
                 """adapt weights"""
                 for previous_node_index, previous_node in enumerate(self.layers[layer_index - 1]):
                     deriv_E_w = deriv_E_hidden_node * hidden_node.weights[previous_node_index]
