@@ -12,9 +12,19 @@ def id_function(x):
     return x
 
 
+def id_function_deriv(x):
+    return 1
+
+
 def relu_function(x):
     """The ReLU-function."""
     return max(0, x)
+
+
+def relu_function_deriv(x):
+    if x > 0:
+        return 1
+    return 0
 
 
 def sigmoid_function(x):
@@ -22,8 +32,19 @@ def sigmoid_function(x):
     try:
         exp_term = exp(-x)
     except OverflowError:
-        if x <= 0:
+        if x < 0:
             return 0
-        if x > 0:
+        if x >= 0:
             return 1
     return 1 / (1 + exp_term)
+
+
+def sigmoid_function_deriv(x):
+    try:
+        exp_term = exp(-x)
+    except OverflowError:
+        if x < 0:
+            return 1
+        if x >= 0:
+            return 0
+    return exp_term / (exp_term + 1)

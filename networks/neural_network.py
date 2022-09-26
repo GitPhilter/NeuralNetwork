@@ -24,9 +24,9 @@ def set_logger(_logger, log_level=logging.INFO):
     logger.setLevel(log_level)
 
 
-def get_new_weight(old_weight, eta, deriv_E_w):
+def get_new_weight(old_weight, eta, deriv_e_w):
     """Get new weight according to delta-function."""
-    new_weight = old_weight - eta * deriv_E_w
+    new_weight = old_weight - eta * deriv_e_w
     return new_weight
 
 
@@ -66,7 +66,7 @@ class NeuralNetwork:
     def train_by_avg_error(self, avg_error, eta):
         """output layer"""
         for output_node_index, output_node in enumerate(self.layers[-1]):
-            deriv_E_node = -avg_error[output_node_index]
+            deriv_E_node = avg_error[output_node_index]
             output_node.deriv_e_node = deriv_E_node
             """adapt each weight"""
             for previous_node_index, previous_node in enumerate(self.layers[-2]):
@@ -75,8 +75,8 @@ class NeuralNetwork:
                 new_weight = get_new_weight(output_node.weights[previous_node_index], eta, deriv_E_w)
                 output_node.weights[previous_node_index] = new_weight
             """adapt bias"""
-            new_bias = get_new_weight(output_node.bias, eta, deriv_E_node)
-            output_node.bias = new_bias
+            #new_bias = get_new_weight(output_node.bias, eta, deriv_E_node)
+            #output_node.bias = new_bias
         """hidden layers"""
         for layer_index in range(len(self.layers) - 2, 0, -1):
             for hidden_node_index, hidden_node in enumerate(self.layers[layer_index]):
@@ -91,8 +91,8 @@ class NeuralNetwork:
                     new_weight = get_new_weight(hidden_node.weights[previous_node_index], eta, deriv_E_w)
                     hidden_node.weights[previous_node_index] = new_weight
                 """adapt bias"""
-                new_bias = get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
-                hidden_node.bias = new_bias
+                #new_bias = get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
+                #hidden_node.bias = new_bias
 
     def train(self, actual_output, expected_output, eta):
         """Train the neural network."""
