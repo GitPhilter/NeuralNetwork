@@ -66,7 +66,7 @@ class NeuralNetwork:
     def train_by_avg_error(self, avg_error, eta):
         """output layer"""
         for output_node_index, output_node in enumerate(self.layers[-1]):
-            deriv_E_node = avg_error[output_node_index]
+            deriv_E_node = -avg_error[output_node_index]
             output_node.deriv_e_node = deriv_E_node
             """adapt each weight"""
             for previous_node_index, previous_node in enumerate(self.layers[-2]):
@@ -87,7 +87,7 @@ class NeuralNetwork:
                 hidden_node.deriv_e_node = deriv_E_hidden_node
                 """adapt weights"""
                 for previous_node_index, previous_node in enumerate(self.layers[layer_index - 1]):
-                    deriv_E_w = deriv_E_hidden_node * hidden_node.weights[previous_node_index]
+                    deriv_E_w = deriv_E_hidden_node * previous_node.output
                     new_weight = get_new_weight(hidden_node.weights[previous_node_index], eta, deriv_E_w)
                     hidden_node.weights[previous_node_index] = new_weight
                 """adapt bias"""

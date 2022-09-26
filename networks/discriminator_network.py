@@ -53,9 +53,6 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
             """output layer"""
             for output_node_index, output_node in enumerate(self.layers[-1]):
                 output_node.fake_weights = output_node.weights.copy()
-                #actual_node_output = actual_output[output_node_index]
-                #expected_node_output = expected_output[output_node_index]
-                #deriv_E_node = actual_node_output - expected_node_output
                 deriv_E_node = self.output[0] - 1
                 output_node.fake_deriv_e_node = deriv_E_node
                 """adapt each weight"""
@@ -74,7 +71,7 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
                     for following_node_index, following_node in enumerate(self.layers[layer_index + 1]):
                         respective_weight = following_node.fake_weights[hidden_node_index]
                         deriv_E_hidden_node += following_node.fake_deriv_e_node * respective_weight
-                    hidden_node.fake_deriv_E_node = deriv_E_hidden_node
+                    hidden_node.fake_deriv_e_node = deriv_E_hidden_node
                     """adapt weights"""
                     for previous_node_index, previous_node in enumerate(self.layers[layer_index - 1]):
                         deriv_E_w = deriv_E_hidden_node * hidden_node.fake_weights[previous_node_index]
@@ -92,7 +89,8 @@ class GreyscaleDiscriminatorNetwork(NeuralNetwork):
             for index, input_node in enumerate(self.layers[0]):
                 gradient_sum = 0
                 for second_node in self.layers[1]:
-                    gradient_sum += second_node.fake_weights[index] - second_node.weights[index]
+                    # gradient_sum += second_node.fake_weights[index] - second_node.weights[index]
+                    gradient_sum += second_node.fake_deriv_e_node * second_node.weights[index]
                 error_vector.append(gradient_sum)
             return error_vector
         #print("FAKE IMAGE CLASSIFIED AS REAL!")

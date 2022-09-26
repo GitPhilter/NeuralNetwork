@@ -67,17 +67,20 @@ def get_input_node_weights(index, number_of_inputs):
 
 class Input_Node(Id_Node):
     """A simple Input_Node that only passes along one incoming input-value."""
-    def __init__(self, index, number_of_inputs):
+    def __init__(self, *, index, number_of_inputs, name=None):
         weights = get_input_node_weights(index, number_of_inputs)
         bias = 0
-        name = "Input_Node no. " + str(index)
+        if name is None:
+            name = f"Input Node {index}"
         super().__init__(name, weights, bias)
         self.index = index
 
 
 class Relu_Node(Node):
     """Node with the ReLU-function as activation function."""
-    def __init__(self, name, weights, bias):
+    def __init__(self, *, weights, bias, name=None):
+        if name is None:
+            name = "ReLU Node"
         super().__init__(name, activation_functions.relu_function, weights, bias)
 
 
@@ -88,7 +91,7 @@ def get_random_relu_node(number_of_inputs, name="ReLU_node"):
         weight = random.random() * 2 - 1
         weights.append(weight)
     bias = random.random() * 2 - 1
-    return Relu_Node(name, weights, bias)
+    return Relu_Node(weights=weights,  bias=bias, name=name)
 
 
 def get_zero_relu_node(number_of_inputs, name="ReLU_node"):
@@ -96,12 +99,14 @@ def get_zero_relu_node(number_of_inputs, name="ReLU_node"):
     weights = []
     for i in range(0, number_of_inputs):
         weights.append(0)
-    return Relu_Node(name, weights, 0)
+    return Relu_Node(weights=weights, bias=0, name=name)
 
 
 class Sigmoid_Node(Node):
     """Node with the Sigmoid-function as activation function."""
-    def __init__(self, name, weights, bias=0):
+    def __init__(self, *, weights, bias=0, name=None):
+        if name is None:
+            name = "Sigmoid Node"
         super().__init__(name, activation_functions.sigmoid_function, weights, bias)
 
 
@@ -114,7 +119,7 @@ def get_random_sigmoid_node(number_of_inputs, name="Sigmoid_Node", set_bias=Fals
     bias = 0
     if set_bias:
         bias = random.random() * 2 - 1
-    return Sigmoid_Node(name, weights, bias)
+    return Sigmoid_Node(weights=weights, bias=bias, name=name)
 
 
 def get_zero_sigmoid_node(number_of_inputs, name="Sigmoid_Node"):
@@ -122,7 +127,7 @@ def get_zero_sigmoid_node(number_of_inputs, name="Sigmoid_Node"):
     weights = []
     for i in range(0, number_of_inputs):
         weights.append(0)
-    return Sigmoid_Node(name, weights, 0)
+    return Sigmoid_Node(weights=weights, bias=0, name=name)
 
 
 def get_start_sigmoid_node(number_of_inputs, name="Sigmoid_Node"):
@@ -130,4 +135,4 @@ def get_start_sigmoid_node(number_of_inputs, name="Sigmoid_Node"):
     weights = []
     for i in range(0, number_of_inputs):
         weights.append(0.5)
-    return Sigmoid_Node(name, weights, 0)
+    return Sigmoid_Node(weights=weights, bias=0, name=name)

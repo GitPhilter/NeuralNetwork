@@ -58,14 +58,16 @@ def get_small_GreyscaleGeneratorNetwork(name, result_image_width, result_image_h
     for i in range(0, number_of_input_nodes):
         input_layer.append(Input_Node(i, number_of_input_nodes))
     layers.append(input_layer)
-    """create hidden and layers."""
+    """create hidden layers."""
+    """
     number_of_previous_nodes = number_of_input_nodes
     for i in range(0, number_of_layers - 1):
         layer = []
         for n in range(0, nodes_per_layer[i]):
-            layer.append(get_random_sigmoid_node(number_of_previous_nodes))
+            layer.append(get_random_relu_node(number_of_previous_nodes))
         number_of_previous_nodes = nodes_per_layer[i]
         layers.append(layer)
+    """
     """create output layer"""
     output_layer = []
     for i in range(0, number_of_output_nodes):
