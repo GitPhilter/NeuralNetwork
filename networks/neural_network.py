@@ -16,6 +16,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logging.basicConfig(level=logging.INFO)
 
+from networks.activation_functions import get_activation_function_deriv
+
 
 def set_logger(_logger, log_level=logging.INFO):
     """Set the logger for all networks."""
@@ -63,43 +65,39 @@ class NeuralNetwork:
             self.output.append(node.output)
         return self.output.copy()
 
-    def train_by_avg_error(self, avg_error, eta):
-        """output layer"""
-        for output_node_index, output_node in enumerate(self.layers[-1]):
-            deriv_E_node = avg_error[output_node_index]
-            output_node.deriv_e_node = deriv_E_node
-            """adapt each weight"""
-            for previous_node_index, previous_node in enumerate(self.layers[-2]):
-                deriv_node_w = previous_node.output
-                deriv_E_w = deriv_E_node * deriv_node_w
-                new_weight = get_new_weight(output_node.weights[previous_node_index], eta, deriv_E_w)
-                output_node.weights[previous_node_index] = new_weight
-            """adapt bias"""
-            #new_bias = get_new_weight(output_node.bias, eta, deriv_E_node)
-            #output_node.bias = new_bias
-        """hidden layers"""
-        for layer_index in range(len(self.layers) - 2, 0, -1):
-            for hidden_node_index, hidden_node in enumerate(self.layers[layer_index]):
-                deriv_E_hidden_node = 0
-                for following_node_index, following_node in enumerate(self.layers[layer_index + 1]):
-                    respective_weight = following_node.weights[hidden_node_index]
-                    deriv_E_hidden_node += following_node.deriv_e_node * respective_weight
-                hidden_node.deriv_e_node = deriv_E_hidden_node
-                """adapt weights"""
-                for previous_node_index, previous_node in enumerate(self.layers[layer_index - 1]):
-                    deriv_E_w = deriv_E_hidden_node * previous_node.output
-                    new_weight = get_new_weight(hidden_node.weights[previous_node_index], eta, deriv_E_w)
-                    hidden_node.weights[previous_node_index] = new_weight
-                """adapt bias"""
-                #new_bias = get_new_weight(hidden_node.bias, eta, deriv_E_hidden_node)
-                #hidden_node.bias = new_bias
+    def backpropagation(self, actual_output, expected_output, eta):
+        """
+        Apply backpropagation with gradient descent and change weights and biases accordingly.
 
-    def train(self, actual_output, expected_output, eta):
-        """Train the neural network."""
-        avg_error = []
-        for i in range(0, len(actual_output)):
-            avg_error.append(actual_output[i] - expected_output[i])
-        self.train_by_avg_error(avg_error, eta)
+        As the error function 1/2(sum(y_i - t_i))^2 is used, so that the partial derivatives are easily
+        computed as just y_i - t_i.
+        """
+        """Compute the total error / loss function."""
+        error_derivs = []
+        for index, ao in actual_output:
+            """Append the derivatives of the loss function to the error_derivs."""
+            error_derivs.append(ao - expected_output[index])
+        """Go through all layers."""
+        for layer_index in range(len(self.layers) - 1, 0, -1):
+            next_error_derivs = []
+            for node_index, node in self.layers[layer_index]:
+                """Compute the result of the inner derivation of the activation function"""
+                node_inner_deriv = get_activation_function_deriv(node.total_input)
+                for weight_index, weight in node.weights:
+                    """The outer derivative is always the output of the respective node."""
+                    node_outer_deriv = self.layers[layer_index - 1][node_index].output
+                    partial_derivation = node_outer_deriv * node_inner_deriv * error_derivs[node_index]
+                    next_error_derivs.append(partial_derivation)
+                    """Adapt the weight."""
+                    node.weights[weight] = get_new_weight(node.weights[weight_index], eta, partial_derivation)
+                """adapt bias"""
+                partial_derivation = 1 * node_inner_deriv * error_derivs[node_index]
+                node.bias = get_new_weight(node.bias, eta, partial_derivation)
+            error_derivs = next_error_derivs
+
+    def online_training(self, data_object, eta):
+        output = self.compute_output(data_object.data)
+        self.backpropagation(output, data_object.expected_output, eta)
 
     def set_weights_and_biases(self, network):
         """Copy all weights and biases from the given network to self."""

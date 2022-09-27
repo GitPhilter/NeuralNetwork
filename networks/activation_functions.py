@@ -7,6 +7,21 @@ __date__ = "09-22-22"
 from math import exp
 
 
+def get_activation_function_deriv(activation_function, x):
+    """
+    Call the respective derivative function of the given activation function and return the result based on x.
+
+
+    This is done simply by appending "_deriv" to the given activation function's name. It is therefore mandatory
+    to keep the naming in this file consistent.
+    :param activation_function: the activation function of which the derivative is needed.
+    :param x: the parameter to be passed to the derivation function.
+    :return: the result of the derivation function given the argument x.
+    """
+    function_string = activation_function.__name__ + "_deriv"
+    return locals()[function_string](x)
+
+
 def id_function(x):
     """The Id-function."""
     return x

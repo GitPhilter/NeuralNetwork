@@ -36,6 +36,8 @@ class Node:
         self.weights = weights
         self.bias = bias
         self.output = None
+        self.total_input = None
+        self.partial_derivs = []
         self.deriv_E_node = None  # the influence this node has on the overall error
 
     def compute_output(self, input_vector):
@@ -45,7 +47,8 @@ class Node:
         input_sum = 0
         for index, iv in enumerate(input_vector):
             input_sum += iv * self.weights[index]
-        self.output = self.activation_function(input_sum + self.bias)
+        self.total_input = input_sum + self.bias
+        self.output = self.activation_function(self.total_input)
 
 
 class Id_Node(Node):
