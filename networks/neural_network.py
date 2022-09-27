@@ -74,30 +74,40 @@ class NeuralNetwork:
         """
         """Compute the total error / loss function."""
         error_derivs = []
-        for index, ao in actual_output:
+        for index, ao in enumerate(actual_output):
             """Append the derivatives of the loss function to the error_derivs."""
+            #print(f"Appending error function for output layer: {ao - expected_output[index]}")
             error_derivs.append(ao - expected_output[index])
         """Go through all layers."""
         for layer_index in range(len(self.layers) - 1, 0, -1):
             next_error_derivs = []
-            for node_index, node in self.layers[layer_index]:
+            for node_index, node in enumerate(self.layers[layer_index]):
+                #print(f"Adapting node: {node.name}")
                 """Compute the result of the inner derivation of the activation function"""
-                node_inner_deriv = get_activation_function_deriv(node.total_input)
-                for weight_index, weight in node.weights:
+                node_inner_deriv = get_activation_function_deriv(node.activation_function, node.total_input)
+                #print(f"Inner deriv: {node_inner_deriv}")
+                for weight_index, weight in enumerate(node.weights):
                     """The outer derivative is always the output of the respective node."""
-                    node_outer_deriv = self.layers[layer_index - 1][node_index].output
+                    node_outer_deriv = self.layers[layer_index - 1][weight_index].output
+                    #print(f"Weight index: {weight_index}, outer_deriv: {node_outer_deriv}")
                     partial_derivation = node_outer_deriv * node_inner_deriv * error_derivs[node_index]
+                    #print(f"Partial derivation: {partial_derivation}")
                     next_error_derivs.append(partial_derivation)
                     """Adapt the weight."""
-                    node.weights[weight] = get_new_weight(node.weights[weight_index], eta, partial_derivation)
+                    #print(f"Adapting the weight from {node.weights[weight_index]} to...")
+                    node.weights[weight_index] = get_new_weight(node.weights[weight_index], eta, partial_derivation)
+                    #print(f"New weight: {node.weights[weight_index]}")
                 """adapt bias"""
                 partial_derivation = 1 * node_inner_deriv * error_derivs[node_index]
+                #print(f"Partial derivation for bias: {partial_derivation}")
+                #print(f"Adapting bias from: {node.bias}...")
                 node.bias = get_new_weight(node.bias, eta, partial_derivation)
+                #print(f"to new bias: {node.bias}")
             error_derivs = next_error_derivs
 
     def online_training(self, data_object, eta):
         output = self.compute_output(data_object.data)
-        self.backpropagation(output, data_object.expected_output, eta)
+        self.backpropagation(output, data_object.expected_result, eta)
 
     def set_weights_and_biases(self, network):
         """Copy all weights and biases from the given network to self."""

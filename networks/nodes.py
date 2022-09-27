@@ -34,6 +34,7 @@ class Node:
         self.name = name
         self.activation_function = activation_function
         self.weights = weights
+        self.fake_weights = weights.copy()
         self.bias = bias
         self.output = None
         self.total_input = None
@@ -53,7 +54,7 @@ class Node:
 
 class Id_Node(Node):
     """Node with the Id-function as activation function."""
-    def __init__(self, name, weights, bias):
+    def __init__(self, *, weights, bias, name):
         super().__init__(name, activation_functions.id_function, weights, bias)
 
 
@@ -75,7 +76,7 @@ class Input_Node(Id_Node):
         bias = 0
         if name is None:
             name = f"Input Node {index}"
-        super().__init__(name, weights, bias)
+        super().__init__(weights=weights, bias=bias, name=name)
         self.index = index
 
 

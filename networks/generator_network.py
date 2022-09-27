@@ -19,7 +19,7 @@ def get_GreyscaleGeneratorNetwork(name, result_image_width, result_image_height,
     """Create input layer."""
     input_layer = []
     for i in range(0, number_of_input_nodes):
-        input_layer.append(Input_Node(i, number_of_input_nodes))
+        input_layer.append(Input_Node(index=i, number_of_inputs=number_of_input_nodes, name=f"Input Node {i}"))
     layers.append(input_layer)
     """create hidden and layers."""
     number_of_previous_nodes = number_of_input_nodes
@@ -56,11 +56,11 @@ def get_small_GreyscaleGeneratorNetwork(name, result_image_width, result_image_h
     """Create input layer."""
     input_layer = []
     for i in range(0, number_of_input_nodes):
-        input_layer.append(Input_Node(i, number_of_input_nodes))
+        input_layer.append(Input_Node(index=i, number_of_inputs=number_of_input_nodes, name=f"Input Node {i}"))
     layers.append(input_layer)
     """create hidden layers."""
-    """
     number_of_previous_nodes = number_of_input_nodes
+    """
     for i in range(0, number_of_layers - 1):
         layer = []
         for n in range(0, nodes_per_layer[i]):

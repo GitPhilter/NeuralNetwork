@@ -19,7 +19,7 @@ def get_activation_function_deriv(activation_function, x):
     :return: the result of the derivation function given the argument x.
     """
     function_string = activation_function.__name__ + "_deriv"
-    return locals()[function_string](x)
+    return globals()[function_string](x)
 
 
 def id_function(x):

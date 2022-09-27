@@ -128,7 +128,7 @@ def _get_input_layer(number_input_nodes):
     """Return the input layer for a given number of input nodes."""
     input_layer = []
     for i in range(0, number_input_nodes):
-        input_layer.append(Input_Node(i, number_input_nodes))
+        input_layer.append(Input_Node(index=i, number_of_inputs=number_input_nodes, name=f"Input Node {i}"))
     return input_layer
 
 
@@ -171,7 +171,7 @@ def _parse_node(index, lines):
             index += 1
         if index < len(lines):
             line = lines[index]
-    new_node = globals()[node_class](node_name, weights, bias)
+    new_node = globals()[node_class](weights=weights, bias=bias, name=node_name)
     return index - 1, new_node
 
 
